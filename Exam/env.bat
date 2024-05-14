@@ -1,4 +1,4 @@
-set EMAIL_HOST_PASSWORD=<cjwyaeeryumcmcoh>
-set EMAIL_HOST_USER=<jennietswanya0@gmail.com>
-set EMAIL_HOST=<smtp.gmail.com>
-set DEFAULT_FROM_EMAIL=<africanotaku92@gmail.com>
+set EMAIL_HOST_PASSWORD=<NileUni2020>
+set EMAIL_HOST_USER=<jennietswanya0@outlook.com>
+set EMAIL_HOST=<smtp-mail.outlook.com>
+set DEFAULT_FROM_EMAIL=<jennietswanya0@outlook.com>

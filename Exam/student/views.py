@@ -1,3 +1,4 @@
+import smtplib
 from django.shortcuts import render,redirect
 from django.views import View
 from .forms import StudentForm, StudentInfoForm
@@ -14,6 +15,9 @@ import threading
 from django.contrib.auth.models import User
 from studentPreferences.models import StudentPreferenceModel
 from django.contrib.auth.models import Group
+from smtplib import SMTP 
+
+
 
 @login_required(login_url='login')
 def index(request):
@@ -28,7 +32,8 @@ class Register(View):
     def post(self,request):
         student_form = StudentForm(data=request.POST)
         student_info_form = StudentInfoForm(data=request.POST)
-        email = request.POST['email']
+        f_email = request.POST['email'].strip()
+        print(f"email: {f_email}")
 
         if student_form.is_valid() and student_info_form.is_valid():
             student = student_form.save()
@@ -44,20 +49,26 @@ class Register(View):
             activate_url = 'http://' + domain +link
             email_subject = 'Activate your Exam Portal account'
             email_body = 'Hi.Please use this link to verify your account\n' + activate_url + ".\n\n You are receiving this message because you registered on " + domain +". If you didn't register please contact support team on " + domain 
-            fromEmail = 'noreply@exam.com'
+            fromEmail = 'jennietswanya0@outlook.com'
             email = EmailMessage(
 				email_subject,
 				email_body,
 				fromEmail,
-				[email],
+				[f_email],
             )
+            # s = smtplib.SMTP('0.0.0.0')
+            # s.connect(port = 587)
+            # dict_test = s.sendmail(from_addr= fromEmail, to_addrs = f_email, msg = "Hello World")
+            # print(f"{dict_test}")
+            #email.send(fail_silently= False)
             student_info = student_info_form.save(commit=False)
             student_info.user = student
             if 'picture' in request.FILES:
                 student_info.picture = request.FILES['picture']
             student_info.save()
-            messages.success(request,"Registered Succesfully. Check Email for confirmation")
             EmailThread(email).start()
+            print("We got here!")
+            messages.success(request,"Registered Succesfully. Check Email for confirmation")
             return redirect('login')
         else:
             print(student_form.errors,student_info_form.errors)
@@ -86,7 +97,7 @@ class LoginView(View):
 
 					email_subject = 'You Logged into your Portal account'
 					email_body = "If you think someone else logged in. Please contact support or reset your password.\n\nYou are receving this message because you have enabled login email notifications in portal settings. If you don't want to recieve such emails in future please turn the login email notifications off in settings."
-					fromEmail = 'noreply@exam.com'
+					fromEmail = 'jennietswanya0@gmail.com'
 					email = EmailMessage(
 						email_subject,
 						email_body,
@@ -150,4 +161,11 @@ class VerificationView(View):
 		except Exception as e:
 			raise e
 		return redirect('login')
-	
+
+# HOST='127.0.0.1:8000'
+# PORT='587'
+
+# smtp= smtplib.SMTP(HOST,PORT)
+
+# smtp.starttls()
+# smtp.connect(HOST,PORT)	
